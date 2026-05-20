@@ -1,4 +1,4 @@
-# 🌊 AETERNA Subsea interferometer Signal Separator & Classifier (Mojo)
+# AETERNA Subsea interferometer Signal Separator & Classifier (Mojo)
 # Sovereign Cyber-Physical Defense Reflex Plane (TRL 6)
 # Developed by: Dimitar Prodromov, AETERNA Pomorie BG
 
@@ -81,7 +81,7 @@ struct MojoAigisClassifier:
 
 fn run_realtime_reflextwin() raises:
     print("======================================================================")
-    print("  🌊 AETERNA Mojo-Engine v5.0 // TRL 6 Sovereign Active Runtime      ")
+    print("  AETERNA Mojo-Engine v5.0 // TRL 6 Sovereign Active Runtime      ")
     print("======================================================================")
     print("System Arch:", info.arch())
     print("SIMD Lane Width:", simd_width)
@@ -121,14 +121,14 @@ fn run_realtime_reflextwin() raises:
     print("Classification Confidence:", confidence * 100, "%")
     
     if class_id == 2:
-        print("\n⚠️ WARNING: Class 2 KINETIC INTERFERENCE / TAP DETECTED!")
+        print("\n[WARNING] Class 2 KINETIC INTERFERENCE / TAP DETECTED!")
         print("ACTION: Relaying Immediate Apoptosis Reflex signal to eBPF Kernel.")
         print("STATUS: TERMINAL ISOLATED IN 0.12ms. REROUTING DATA TRUNK.")
     elif class_id == 1:
-        print("\nℹ️ INFO: Class 1 Seismic / Ocean Wave oscillation detected.")
+        print("\n[INFO] Class 1 Seismic / Ocean Wave oscillation detected.")
         print("ACTION: Logging oceanographic telemetry to EU Science Portal.")
     else:
-        print("\n✅ OK: Optical phase and polarization stable.")
+        print("\n[OK] Optical phase and polarization stable.")
     print("------------------------------------------------------------------")
 
 fn main():

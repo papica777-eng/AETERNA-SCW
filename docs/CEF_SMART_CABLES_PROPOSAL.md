@@ -1,6 +1,6 @@
 # CONNECTING EUROPE FACILITY (CEF) DIGITAL PROPOSAL: SMART CABLES WORKS
 
-## 🌊 Project Acronym: AETERNA-SCW
+## Project Acronym: AETERNA-SCW
 * **Proposal ID:** CEF-DIG-2026-SMART-CABLES-101538202
 * **Call:** CEF-DIG-2026-SMART-CABLES
 * **Topic:** CEF-DIG-2026-SMART-CABLES-WORKS
@@ -14,7 +14,7 @@
 
 ---
 
-### 🛡️ Submarine Cyber-Physical & Acoustic Topology: AIGIS Subsea Shield
+### Submarine Cyber-Physical & Acoustic Topology: AIGIS Subsea Shield
 *Visualizing the integration of optical phase monitoring and threat containment on submarine telecommunications backbones.*
 
 ```mermaid
