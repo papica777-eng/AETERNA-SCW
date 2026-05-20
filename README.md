@@ -9,6 +9,14 @@
 
 ---
 
+## High-Prestige UHD Masterwork
+
+A cinematic, ultra-high-definition visualization of the **AETERNA Subsea Cyber-Physical Shield** resting on the deep-ocean bed, actively monitoring light telemetry and protected by holographic secure grids. Signed by the Sovereign Systems Architect *Dimitar Prodromov*:
+
+![AETERNA-SCW Subsea Cyber-Physical Shield Signed Masterwork](docs/aeterna_scw_aigis_masterpiece_signed.png)
+
+---
+
 ## Project Overview
 
 **AETERNA-SCW (AETERNA Smart Cables Works)** is a sovereign, €20,000,000 cyber-physical infrastructure deployment proposal submitted under the Connecting Europe Facility (**CEF Digital 2026**) "Smart Cables Works" call. 
@@ -113,16 +121,6 @@ If you have the Mojo compiler installed, you can execute the real-time simulatio
 ```bash
 mojo scripts/signal_classifier.mojo
 ```
-
----
-
-## High-Prestige UHD Masterwork
-
-A cinematic, ultra-high-definition visualization of the **AETERNA Subsea Cyber-Physical Shield** resting on the deep-ocean bed, actively monitoring light telemetry and protected by holographic secure grids. Signed by the Sovereign Systems Architect *Dimitar Prodromov*:
-
-![AETERNA-SCW Subsea Cyber-Physical Shield Signed Masterwork](docs/aeterna_scw_aigis_masterpiece_signed.png)
-
----
 
 ## Consortium Partners
 
