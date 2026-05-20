@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AETERNA-SCW // Smart Cables Cyber-Physical Security</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         :root {
             --bg-color: #030712;
@@ -88,13 +89,13 @@
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border-color);
-            padding: 0.5rem 1rem;
+            background: rgba(59, 130, 246, 0.05);
+            border: 1px solid rgba(59, 130, 246, 0.25);
+            padding: 0.5rem 1.25rem;
             border-radius: 2rem;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: 600;
-            color: var(--accent);
+            color: #60a5fa;
             text-transform: uppercase;
             letter-spacing: 0.05em;
             margin-bottom: 2rem;
@@ -196,9 +197,43 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
 
-        .card-icon {
-            font-size: 2rem;
+        .card-icon-wrapper {
+            width: 3.2rem;
+            height: 3.2rem;
+            border-radius: 0.75rem;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover .card-icon-wrapper {
+            background: rgba(59, 130, 246, 0.08);
+            border-color: rgba(59, 130, 246, 0.25);
+            transform: scale(1.05);
+        }
+
+        .card-icon-wrapper i {
+            width: 1.6rem;
+            height: 1.6rem;
+        }
+
+        .icon-cyan {
+            color: #00f0ff;
+            filter: drop-shadow(0 0 8px rgba(0, 240, 255, 0.3));
+        }
+
+        .icon-gold {
+            color: #ff9f1c;
+            filter: drop-shadow(0 0 8px rgba(255, 159, 28, 0.3));
+        }
+
+        .icon-blue {
+            color: #3b82f6;
+            filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.3));
         }
 
         .card-title {
@@ -230,7 +265,7 @@
             color: var(--accent);
         }
 
-        footer-text {
+        .footer-text {
             text-align: center;
             padding: 3rem 1.5rem;
             font-size: 0.85rem;
@@ -252,17 +287,20 @@
 
     <main>
         <section class="hero-section">
-            <div class="tagline">🌊 Connecting Europe Facility (CEF Digital) // works proposal</div>
+            <div class="tagline">
+                <i data-lucide="shield" style="width: 14px; height: 14px;"></i>
+                Connecting Europe Facility (CEF Digital) // Works Proposal
+            </div>
             <h1>Sovereign Submarine Cybersecurity &<br><span>AIGIS Subsea Shield Integration</span></h1>
             <p class="hero-desc">
                 An advanced €20,000,000 cyber-physical infrastructure deployment retrofitting submarine telecommunication fiber trunks with real-time optical phase and polarization monitoring, coupled with ultra-low latency Mojo-based neural signal classification.
             </p>
             <div class="btn-group">
                 <a href="docs/smart_cables_hud.html" class="btn btn-primary">
-                    <span class="card-icon" style="margin: 0; font-size: 1.2rem;">🛡️</span> Launch Smart Cables HUD
+                    <i data-lucide="shield-check" style="width: 18px; height: 18px;"></i> Launch Smart Cables HUD
                 </a>
                 <a href="docs/pdf/CEF_Part_B_Technical_Description.pdf" class="btn btn-secondary">
-                    📄 Read Technical Proposal (PDF)
+                    <i data-lucide="file-text" style="width: 18px; height: 18px;"></i> Read Technical Proposal (PDF)
                 </a>
             </div>
         </section>
@@ -270,10 +308,12 @@
         <section class="grid-section">
             <div class="card">
                 <div>
-                    <div class="card-icon">🌊</div>
+                    <div class="card-icon-wrapper">
+                        <i data-lucide="waves" class="icon-cyan"></i>
+                    </div>
                     <h3 class="card-title">Smart Cables HUD</h3>
                     <p class="card-desc">
-                        Interactive simulated control panel representing Distributed Acoustic Sensing (DAS) and State of Polarization (SOP) light phase monitoring with instant (<1ms) eBPF kernel process apoptosis.
+                        Interactive simulated control panel representing Distributed Acoustic Sensing (DAS) and State of Polarization (SOP) light phase monitoring with instant (&lt;1ms) eBPF kernel process apoptosis.
                     </p>
                 </div>
                 <a href="docs/smart_cables_hud.html" class="card-link">Launch HUD Sim &rarr;</a>
@@ -281,7 +321,9 @@
 
             <div class="card">
                 <div>
-                    <div class="card-icon">⚡</div>
+                    <div class="card-icon-wrapper">
+                        <i data-lucide="cpu" class="icon-gold"></i>
+                    </div>
                     <h3 class="card-title">Smart City Grid</h3>
                     <p class="card-desc">
                         Comprehensive real-time telemetry dashboard monitoring energy distribution grids, load balancing loops, and autonomous grid healing actions under sovereign control.
@@ -292,7 +334,9 @@
 
             <div class="card">
                 <div>
-                    <div class="card-icon">📊</div>
+                    <div class="card-icon-wrapper">
+                        <i data-lucide="folder-check" class="icon-blue"></i>
+                    </div>
                     <h3 class="card-title">Submission Package</h3>
                     <p class="card-desc">
                         The fully verified and compiled 13-document package, including cost calculations, Gantt timetables, letters of support, and sovereignty control declarations.
@@ -306,5 +350,9 @@
     <div class="footer-text" style="text-align: center; color: var(--text-muted); font-size: 0.8rem; padding: 2rem 0; opacity: 0.5;">
         © 2026 AETERNA-SCW // Lead Systems Architect: Dimitar Prodromov // Pomorie, Bulgaria
     </div>
+
+    <script>
+        lucide.createIcons();
+    </script>
 </body>
 </html>
