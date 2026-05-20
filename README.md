@@ -116,6 +116,14 @@ mojo scripts/signal_classifier.mojo
 
 ---
 
+## High-Prestige UHD Masterwork
+
+A cinematic, ultra-high-definition visualization of the **AETERNA Subsea Cyber-Physical Shield** resting on the deep-ocean bed, actively monitoring light telemetry and protected by holographic secure grids. Signed by the Sovereign Systems Architect *Dimitar Prodromov*:
+
+![AETERNA-SCW Subsea Cyber-Physical Shield Signed Masterwork](docs/aeterna_scw_aigis_masterpiece_signed.png)
+
+---
+
 ## Consortium Partners
 
 1.  **AETERNA** (Pomorie, Bulgaria) — **Lead Coordinator & Sovereign Systems Architect** (PIC: `865986222`). High-performance vectorized Mojo classification, Zig optical ingress parsing, and kernel-level eBPF isolation systems.
