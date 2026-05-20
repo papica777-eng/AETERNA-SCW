@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AETERNA-SCW // Smart Cables Cyber-Physical Security</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #030712;
+            --primary: #3b82f6;
+            --primary-glow: rgba(59, 130, 246, 0.15);
+            --accent: #f97316;
+            --accent-glow: rgba(249, 115, 22, 0.15);
+            --card-bg: rgba(17, 24, 39, 0.7);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(249, 115, 22, 0.05) 0%, transparent 45%);
+            background-attachment: fixed;
+            min-height: 100vh;
+        }
+
+        header {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-symbol {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 0.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: bold;
+            color: white;
+            font-size: 1.25rem;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+        }
+
+        .logo-text {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 1.5rem;
+            letter-spacing: -0.05em;
+            background: linear-gradient(to right, #ffffff, var(--text-muted));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-section {
+            max-width: 1200px;
+            margin: 5rem auto;
+            padding: 0 1.5rem;
+            text-align: center;
+        }
+
+        .tagline {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            line-height: 1.1;
+            letter-spacing: -0.03em;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(to right, #ffffff, #9ca3af);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        h1 span {
+            background: linear-gradient(to right, #60a5fa, #f97316);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-desc {
+            max-width: 750px;
+            margin: 0 auto 3rem auto;
+            font-size: 1.15rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 5rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.85rem 2rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 20px var(--primary-glow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-2px);
+        }
+
+        .grid-section {
+            max-width: 1200px;
+            margin: 0 auto 8rem auto;
+            padding: 0 1.5rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            padding: 2.5rem;
+            backdrop-filter: blur(12px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(59, 130, 246, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .card-icon {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: white;
+        }
+
+        .card-desc {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 2rem;
+        }
+
+        .card-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: color 0.2s ease;
+        }
+
+        .card-link:hover {
+            color: var(--accent);
+        }
+
+        footer-text {
+            text-align: center;
+            padding: 3rem 1.5rem;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.2);
+            border-top: 1px solid var(--border-color);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo-section">
+            <div class="logo-symbol">Æ</div>
+            <div class="logo-text">AETERNA-SCW</div>
+        </div>
+        <a href="https://github.com/papica777-eng/AETERNA-SCW" class="btn btn-secondary" style="padding: 0.5rem 1.25rem; font-size: 0.85rem;">GitHub Repository</a>
+    </header>
+
+    <main>
+        <section class="hero-section">
+            <div class="tagline">🌊 Connecting Europe Facility (CEF Digital) // works proposal</div>
+            <h1>Sovereign Submarine Cybersecurity &<br><span>AIGIS Subsea Shield Integration</span></h1>
+            <p class="hero-desc">
+                An advanced €20,000,000 cyber-physical infrastructure deployment retrofitting submarine telecommunication fiber trunks with real-time optical phase and polarization monitoring, coupled with ultra-low latency Mojo-based neural signal classification.
+            </p>
+            <div class="btn-group">
+                <a href="docs/smart_cables_hud.html" class="btn btn-primary">
+                    <span class="card-icon" style="margin: 0; font-size: 1.2rem;">🛡️</span> Launch Smart Cables HUD
+                </a>
+                <a href="docs/pdf/CEF_Part_B_Technical_Description.pdf" class="btn btn-secondary">
+                    📄 Read Technical Proposal (PDF)
+                </a>
+            </div>
+        </section>
+
+        <section class="grid-section">
+            <div class="card">
+                <div>
+                    <div class="card-icon">🌊</div>
+                    <h3 class="card-title">Smart Cables HUD</h3>
+                    <p class="card-desc">
+                        Interactive simulated control panel representing Distributed Acoustic Sensing (DAS) and State of Polarization (SOP) light phase monitoring with instant (<1ms) eBPF kernel process apoptosis.
+                    </p>
+                </div>
+                <a href="docs/smart_cables_hud.html" class="card-link">Launch HUD Sim &rarr;</a>
+            </div>
+
+            <div class="card">
+                <div>
+                    <div class="card-icon">⚡</div>
+                    <h3 class="card-title">Smart City Grid</h3>
+                    <p class="card-desc">
+                        Comprehensive real-time telemetry dashboard monitoring energy distribution grids, load balancing loops, and autonomous grid healing actions under sovereign control.
+                    </p>
+                </div>
+                <a href="docs/smart_city.html" class="card-link">Explore Smart City Grid &rarr;</a>
+            </div>
+
+            <div class="card">
+                <div>
+                    <div class="card-icon">📊</div>
+                    <h3 class="card-title">Submission Package</h3>
+                    <p class="card-desc">
+                        The fully verified and compiled 13-document package, including cost calculations, Gantt timetables, letters of support, and sovereignty control declarations.
+                    </p>
+                </div>
+                <a href="docs/pdf/CEF_Part_B_Technical_Description.pdf" class="card-link">View Main Proposal PDF &rarr;</a>
+            </div>
+        </section>
+    </main>
+
+    <div class="footer-text" style="text-align: center; color: var(--text-muted); font-size: 0.8rem; padding: 2rem 0; opacity: 0.5;">
+        © 2026 AETERNA-SCW // Lead Systems Architect: Dimitar Prodromov // Pomorie, Bulgaria
+    </div>
+</body>
+</html>
