@@ -102,7 +102,9 @@ def html_to_flowables(soup, styles):
             # Check if this paragraph contains the signature or keys to embed signature image
             if "[AETERNA_SEC_SOVEREIGN_AUTH_KEY" in text:
                 flowables.append(Spacer(1, 15))
-                sig_path = "z:\\soul\\docs\\assets\\dimitar_p_signature.png"
+                script_dir = os.path.dirname(os.path.abspath(__file__))
+                repo_root = os.path.dirname(script_dir)
+                sig_path = os.path.join(repo_root, "docs", "assets", "dimitar_p_signature.png")
                 if os.path.exists(sig_path):
                     flowables.append(Image(sig_path, width=120, height=45))
                     flowables.append(Spacer(1, 5))
@@ -202,7 +204,9 @@ def html_to_flowables(soup, styles):
                 flowables.append(Spacer(1, 10))
                 flowables.append(Paragraph("<b>AIGIS Subsea Shield - Cyber-Physical Flowchart:</b>", styles['CustomH3']))
                 flowables.append(Spacer(1, 6))
-                img_path = "z:\\soul\\docs\\assets\\aigis_subsea_shield_flowchart.png"
+                script_dir = os.path.dirname(os.path.abspath(__file__))
+                repo_root = os.path.dirname(script_dir)
+                img_path = os.path.join(repo_root, "docs", "assets", "aigis_subsea_shield_flowchart.png")
                 if os.path.exists(img_path):
                     flowables.append(Image(img_path, width=480, height=270))
                 else:
@@ -324,27 +328,29 @@ def compile_md_to_pdf(md_file_path, pdf_file_path, doc_title, doc_footer):
     print(f"Success! Saved PDF at: {pdf_file_path}")
 
 def main():
-    pdf_dir = "z:\\soul\\docs\\pdf"
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    repo_root = os.path.dirname(script_dir)
+    pdf_dir = os.path.join(repo_root, "docs", "pdf")
     if not os.path.exists(pdf_dir):
         os.makedirs(pdf_dir)
         print(f"Created directory: {pdf_dir}")
         
     tasks = [
         {
-            "md": "z:\\soul\\docs\\CEF_SMART_CABLES_PROPOSAL.md",
-            "pdf": "z:\\soul\\docs\\pdf\\CEF_Part_B_Technical_Description.pdf",
+            "md": os.path.join(repo_root, "docs", "CEF_SMART_CABLES_PROPOSAL.md"),
+            "pdf": os.path.join(pdf_dir, "CEF_Part_B_Technical_Description.pdf"),
             "title": "Part B Technical Description (WORKS)",
             "footer": "CONFIDENTIAL // CEF DIGITAL 2026 // AETERNA-SCW SMART CABLES WORKS"
         },
         {
-            "md": "z:\\soul\\docs\\CEF_SECURITY_COMPLIANCE_DECLARATION.md",
-            "pdf": "z:\\soul\\docs\\pdf\\CEF_Security_Compliance_Declaration.pdf",
+            "md": os.path.join(repo_root, "docs", "CEF_SECURITY_COMPLIANCE_DECLARATION.md"),
+            "pdf": os.path.join(pdf_dir, "CEF_Security_Compliance_Declaration.pdf"),
             "title": "Security Compliance Declaration & Sovereignty Attestation",
             "footer": "EU SOVEREIGN SECURITY ATTESTATION // NIS2 COMPLIANT // PIC 865986222"
         },
         {
-            "md": "z:\\soul\\docs\\CEF_LETTER_OF_SUPPORT_TEMPLATE.md",
-            "pdf": "z:\\soul\\docs\\pdf\\CEF_Letter_of_Support_Template.pdf",
+            "md": os.path.join(repo_root, "docs", "CEF_LETTER_OF_SUPPORT_TEMPLATE.md"),
+            "pdf": os.path.join(pdf_dir, "CEF_Letter_of_Support_Template.pdf"),
             "title": "Consortium Letter of Support Template",
             "footer": "CEF DIGITAL 2026 // AETERNA-SCW // CONSORTIUM PARTICIPATION LETTER"
         }
