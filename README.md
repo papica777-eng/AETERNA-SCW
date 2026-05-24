@@ -34,20 +34,19 @@ The **AIGIS Subsea Shield** continuously maps optical phase and polarization ano
 ```mermaid
 graph TD
     %% Subsea Ingress
-    subgraph subsea ["Subsea Subsystem (Fibre-Optic Spine)"]
-        A["Submarine Telecom Cable"] -->|"Light Phase Fluctuations"| B["Distributed Acoustic Sensing (DAS)"]
+    subgraph Subsea Subsystem (Fibre-Optic Spine)
+        A["Submarine Telecomm Cable"] -->|"Light Phase Fluctuations"| B["Distributed Acoustic Sensing (DAS)"]
         A -->|"Light Polarization (SOP) Shift"| C["State of Polarization Monitor"]
     end
 
     %% Edge Ingress & DSP
-    subgraph landing ["Landing Station (AETERNA Core Node)"]
-        B -->|"Zero-Copy PCIe Stream"| D["Mojo-Accelerated Signal Separator"]
-        C -->|"Zero-Copy PCIe Stream"| D
+    subgraph Landing Station (AETERNA Core Node)
+        B & C -->|"Zero-Copy PCIe Stream"| D["Mojo-Accelerated Signal Separator"]
         D -->|"35,000x Real-time DSP Inference"| E["Zero-Drift Signal Classification"]
     end
 
     %% Defense Reflex
-    subgraph alert ["Alert & Control (AIGIS Response Plane)"]
+    subgraph Alert & Control (AIGIS Response Plane)
         E -->|"Class 1: Seismic / Ocean Waves"| F["EU Oceanographic Research Portal"]
         E -->|"Class 2: Kinetic Threat (Anchor / Sub)"| G["AIGIS Landing Terminal Apoptosis"]
         G -->|"Immediate Isolation (<1ms)"| H["Landing Station Data Trunk Shutdown"]
@@ -59,12 +58,9 @@ graph TD
     classDef defense fill:#2d1b00,stroke:#d97706,color:#fff;
     classDef research fill:#063945,stroke:#06b6d4,color:#fff;
     
-    class C highlight;
-    class D highlight;
-    class E defense;
-    class G defense;
-    class F research;
-    class H research;
+    class C,D highlight;
+    class E,G defense;
+    class F,H research;
 ```
 
 ---

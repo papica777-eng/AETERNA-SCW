@@ -934,9 +934,7 @@ def generate_previous_projects_list(filepath):
     print(f"Success! List of Previous Projects PDF saved at: {filepath}")
 
 def main():
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    repo_root = os.path.dirname(script_dir)
-    pdf_dir = os.path.join(repo_root, "docs", "pdf")
+    pdf_dir = "z:\\soul\\docs\\pdf"
     if not os.path.exists(pdf_dir):
         os.makedirs(pdf_dir)
         
