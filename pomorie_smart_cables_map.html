@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AETERNA-SCW // Топографска Карта & Станция в Поморие</title>
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #070b13;
+            --card-bg: rgba(13, 20, 36, 0.85);
+            --card-border: rgba(0, 240, 255, 0.25);
+            --cyan: #00f0ff;
+            --emerald: #00ffaa;
+            --purple: #b55fe6;
+            --gold: #f59e0b;
+            --red: #ff2a85;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top Header */
+        header {
+            height: 64px;
+            background: rgba(7, 11, 19, 0.95);
+            border-bottom: 1px solid var(--card-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .badge {
+            background: rgba(0, 240, 255, 0.15);
+            border: 1px solid var(--cyan);
+            color: var(--cyan);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 8px;
+            border-radius: 6px;
+            letter-spacing: 0.5px;
+        }
+
+        .title-group h1 {
+            font-size: 1.15rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            color: #fff;
+        }
+
+        .title-group span {
+            color: var(--cyan);
+        }
+
+        .coords-pill {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--emerald);
+            background: rgba(0, 255, 170, 0.1);
+            border: 1px solid rgba(0, 255, 170, 0.3);
+            padding: 5px 12px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--emerald);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--emerald);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.9); opacity: 0.8; }
+            50% { transform: scale(1.3); opacity: 1; }
+            100% { transform: scale(0.9); opacity: 0.8; }
+        }
+
+        /* Main Container */
+        .main-layout {
+            flex: 1;
+            display: flex;
+            position: relative;
+            height: calc(100vh - 64px);
+        }
+
+        #map {
+            flex: 1;
+            height: 100%;
+            background: #050810;
+        }
+
+        /* Floating Sidebar */
+        .sidebar {
+            width: 480px;
+            height: calc(100% - 32px);
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            backdrop-filter: blur(20px);
+            z-index: 999;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 240, 255, 0.05);
+        }
+
+        .sidebar-header h2 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--cyan);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sidebar-content {
+            padding: 16px 20px;
+            overflow-y: auto;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* Photo Render Card */
+        .render-card {
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(0, 240, 255, 0.4);
+            position: relative;
+            background: #000;
+            box-shadow: 0 10px 25px rgba(0, 240, 255, 0.2);
+        }
+
+        .render-card img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.4s ease;
+        }
+
+        .render-card:hover img {
+            transform: scale(1.03);
+        }
+
+        .render-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 10px 14px;
+            background: linear-gradient(0deg, rgba(7, 11, 19, 0.95) 0%, transparent 100%);
+            font-size: 11px;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--cyan);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Specs Grid */
+        .specs-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .spec-box {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            padding: 10px 12px;
+        }
+
+        .spec-label {
+            font-size: 10px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-family: 'JetBrains Mono', monospace;
+            margin-bottom: 4px;
+        }
+
+        .spec-val {
+            font-size: 12px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .spec-val.highlight {
+            color: var(--emerald);
+        }
+
+        /* Description Box */
+        .desc-box {
+            background: rgba(0, 240, 255, 0.04);
+            border-left: 3px solid var(--cyan);
+            border-radius: 0 8px 8px 0;
+            padding: 12px 14px;
+            font-size: 12.5px;
+            line-height: 1.6;
+            color: #cbd5e1;
+        }
+
+        /* Map Controls layer toggle */
+        .layer-toggle-btn {
+            position: absolute;
+            top: 16px;
+            left: 60px;
+            z-index: 1000;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        .layer-toggle-btn:hover {
+            border-color: var(--cyan);
+            color: var(--cyan);
+        }
+
+        /* Custom Leaflet Popups */
+        .leaflet-popup-content-wrapper {
+            background: rgba(13, 20, 36, 0.95) !important;
+            border: 1px solid var(--cyan) !important;
+            color: #fff !important;
+            border-radius: 12px !important;
+            box-shadow: 0 0 25px rgba(0, 240, 255, 0.3) !important;
+            font-family: 'Outfit', sans-serif !important;
+        }
+
+        .leaflet-popup-tip {
+            background: rgba(13, 20, 36, 0.95) !important;
+            border: 1px solid var(--cyan) !important;
+        }
+
+        .popup-title {
+            font-weight: 800;
+            color: var(--cyan);
+            font-size: 13px;
+            margin-bottom: 4px;
+        }
+
+        .popup-desc {
+            font-size: 11px;
+            color: #cbd5e1;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="brand">
+            <span class="badge">CEF-DIG-2026</span>
+            <div class="title-group">
+                <h1>AETERNA-SCW <span>//</span> ПОМОРИЕ МОРСКА СТАНЦИЯ & КВАНТОВ ТЕРМИНАЛ</h1>
+            </div>
+        </div>
+        <div class="coords-pill">
+            <div class="pulse-dot"></div>
+            <span>ПОМОРИЕ (ЧЕРНО МОРЕ): 42°33'24.0"N 27°38'42.0"E</span>
+        </div>
+    </header>
+
+    <!-- Main Map Viewport -->
+    <div class="main-layout">
+        
+        <button id="toggle-layer-btn" class="layer-toggle-btn" onclick="toggleMapLayer()">
+            🛰️ СМЯНА НА КАРТАТА: САТЕЛИТ / КИБЕР
+        </button>
+
+        <div id="map"></div>
+
+        <!-- Floating Sidebar Info -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>🏛️ АРХИТЕКТУРЕН ОБЛИК & ТОПОЛОГИЯ</h2>
+                <span class="badge" style="border-color: var(--emerald); color: var(--emerald);">STATUS: ACTIVE</span>
+            </div>
+
+            <div class="sidebar-content">
+                
+                <!-- Photorealistic Render with 3 Tabs -->
+                <div style="display: flex; gap: 6px; margin-bottom: 8px;">
+                    <button id="btn-view-south" onclick="switchRenderView('south')" style="flex: 1; padding: 6px 6px; background: rgba(0,240,255,0.25); border: 1px solid var(--cyan); color: var(--cyan); font-family: 'JetBrains Mono', monospace; font-size: 9.5px; font-weight: 700; border-radius: 6px; cursor: pointer;">
+                        🏖️ ЮЖНА ИВИЦА (ЗАВЕТ)
+                    </button>
+                    <button id="btn-view-calm" onclick="switchRenderView('calm')" style="flex: 1; padding: 6px 6px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); color: #cbd5e1; font-family: 'JetBrains Mono', monospace; font-size: 9.5px; font-weight: 700; border-radius: 6px; cursor: pointer;">
+                        ☀️ НОС ПОМОРИЕ
+                    </button>
+                    <button id="btn-view-storm" onclick="switchRenderView('storm')" style="flex: 1; padding: 6px 6px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); color: #cbd5e1; font-family: 'JetBrains Mono', monospace; font-size: 9.5px; font-weight: 700; border-radius: 6px; cursor: pointer;">
+                        🌊 ЩОРМОВА ЗАЩИТА
+                    </button>
+                </div>
+
+                <div class="render-card">
+                    <img id="main-render-img" src="assets/pomorie_south_beach_landing_station.jpg" alt="AETERNA-SCW Pomorie Landing Station Render">
+                    <div class="render-caption">
+                        <span id="render-caption-text">ЮЖНА ИВИЦА // БУРГАСКИ ЗАЛИВ (ЗАЩИТЕНА ЗОНА)</span>
+                        <span style="color: var(--emerald);">8K RENDER</span>
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div class="desc-box" id="desc-text-box">
+                    <strong>Защитена зона (Южната ивица):</strong> Разположена в заветната южна част на Поморие с изглед към Бургаския залив. Полуостровът действа като огромен естествен вълнолом, спиращ североизточните черноморски бури. Водата в залива е спокойна, което позволява елегантна крайбрежна интеграция без нужда от агресивни тетраподи.
+                </div>
+
+                <!-- Technical Specs Grid -->
+                <div class="specs-grid">
+                    <div class="spec-box">
+                        <div class="spec-label">Координати (Южен плаж)</div>
+                        <div class="spec-val highlight">42.5580° N, 27.6180° E</div>
+                    </div>
+                    <div class="spec-box">
+                        <div class="spec-label">Морско вълнение</div>
+                        <div class="spec-val highlight">Завет / Мъртва зона (0.0–0.5m)</div>
+                    </div>
+                    <div class="spec-box">
+                        <div class="spec-label">Оптичен Интеррогатор</div>
+                        <div class="spec-val">DAS / SOP (10 kHz)</div>
+                    </div>
+                    <div class="spec-box">
+                        <div class="spec-label">AI Класификация</div>
+                        <div class="spec-val highlight">Mojo O(1) &lt;1.14ms</div>
+                    </div>
+                    <div class="spec-box">
+                        <div class="spec-label">Ядрена Защита</div>
+                        <div class="spec-val">Linux eBPF &lt;1.02ms</div>
+                    </div>
+                    <div class="spec-box">
+                        <div class="spec-label">Свързаност</div>
+                        <div class="spec-val highlight">Поморие -> Бургас -> София</div>
+                    </div>
+                </div>
+
+                <!-- EU & Municipal Registration info -->
+                <div class="spec-box" style="background: rgba(0,0,0,0.4); border-color: rgba(0,240,255,0.2);">
+                    <div class="spec-label" style="color: var(--cyan);">Официална институционална регистрация</div>
+                    <div style="font-size: 11.5px; line-height: 1.5; color: #cbd5e1; margin-top: 4px;">
+                        • <strong>Министерски съвет (МТИТС):</strong> Вх. № 24421493<br>
+                        • <strong>Община Поморие:</strong> Рег. № 24421517<br>
+                        • <strong>Брюксел (CEF Digital Works):</strong> Proposal ID 101354145 (€20,000,000)
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Init Map centered on Pomorie Peninsula
+        const southBeachCoords = [42.5580, 27.6180];
+        const eastCapeCoords = [42.5567, 27.6450];
+
+        const map = L.map('map', {
+            center: [42.5600, 27.6300],
+            zoom: 14,
+            zoomControl: false
+        });
+
+        L.control.zoom({ position: 'bottomleft' }).addTo(map);
+
+        // Map Layers (Satellite vs Dark Carto)
+        const satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            attribution: 'Esri, Maxar, Earthstar Geographics'
+        });
+
+        const darkLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; CartoDB'
+        });
+
+        satelliteLayer.addTo(map);
+        let currentLayer = 'satellite';
+
+        function toggleMapLayer() {
+            if (currentLayer === 'satellite') {
+                map.removeLayer(satelliteLayer);
+                darkLayer.addTo(map);
+                currentLayer = 'dark';
+                document.getElementById('toggle-layer-btn').innerHTML = '🗺️ СМЯНА НА КАРТАТА: ТЪМЕН КИБЕР РЕЖИМ';
+            } else {
+                map.removeLayer(darkLayer);
+                satelliteLayer.addTo(map);
+                currentLayer = 'satellite';
+                document.getElementById('toggle-layer-btn').innerHTML = '🛰️ СМЯНА НА КАРТАТА: САТЕЛИТЕН РЕЖИМ';
+            }
+        }
+
+        // Custom Markers
+        const southStationIcon = L.divIcon({
+            className: 'custom-icon',
+            html: `<div style="background: rgba(0, 255, 170, 0.95); border: 2px solid #fff; width: 26px; height: 26px; border-radius: 50%; box-shadow: 0 0 25px #00ffaa; display: flex; align-items: center; justify-content: center; font-size: 13px;">🏖️</div>`,
+            iconSize: [26, 26],
+            iconAnchor: [13, 13]
+        });
+
+        const eastCapeIcon = L.divIcon({
+            className: 'custom-icon',
+            html: `<div style="background: rgba(0, 240, 255, 0.9); border: 2px solid #fff; width: 22px; height: 22px; border-radius: 50%; box-shadow: 0 0 20px #00f0ff; display: flex; align-items: center; justify-content: center; font-size: 11px;">🏛️</div>`,
+            iconSize: [22, 22],
+            iconAnchor: [11, 11]
+        });
+
+        // 1. South Beach Prime Landing Station Marker (Recommended)
+        const southMarker = L.marker(southBeachCoords, { icon: southStationIcon }).addTo(map);
+        southMarker.bindPopup(`
+            <div class="popup-title" style="color: var(--emerald);">★ ЮЖНА ИВИЦА // AETERNA-SCW CABLE LANDING STATION</div>
+            <div class="popup-desc">
+                <strong>ПРЕПОРЪЧИТЕЛНА ЛОКАЦИЯ:</strong> Напълно защитена заветна зона в Бургаския залив.<br>
+                <strong>Предимства:</strong> Нулево щормово вълнение, пясъчно дъно за лесен сондаж (HDD), директен излаз към главен път E87 към Бургас.
+            </div>
+        `).openPopup();
+
+        // 2. East Cape Landing Point Marker
+        const eastMarker = L.marker(eastCapeCoords, { icon: eastCapeIcon }).addTo(map);
+        eastMarker.bindPopup(`
+            <div class="popup-title">НОС ПОМОРИЕ (ИЗТОЧЕН ВХОД)</div>
+            <div class="popup-desc">
+                Алтернативна скалиста точка с директен излаз към открито Черно море и тетраподна вълноломна защита.
+            </div>
+        `);
+
+        // 3. Submarine Route from South Beach out into Burgas Bay and Black Sea
+        const southSubseaRoute = [
+            southBeachCoords,
+            [42.5500, 27.6250],
+            [42.5400, 27.6500],
+            [42.5300, 27.7200],
+            [42.5000, 27.8500],
+            [42.4500, 28.1000],
+            [42.4000, 28.5000]
+        ];
+
+        const southSubseaLine = L.polyline(southSubseaRoute, {
+            color: '#00ffaa',
+            weight: 4,
+            opacity: 0.9,
+            dashArray: '10, 8'
+        }).addTo(map);
+
+        southSubseaLine.bindPopup(`
+            <div class="popup-title" style="color: var(--emerald);">ГЛАВНО ПОДВОДНО ТРАСЕ (ЮЖЕН ЗАЛИВ)</div>
+            <div class="popup-desc">
+                Подводният оптичен кабел навлиза плавно по защитеното пясъчно дъно на Бургаския залив и се насочва към дълбоките води на Черно море.
+            </div>
+        `);
+
+        // Sensor Array Radius Circles
+        L.circle(southBeachCoords, {
+            radius: 1000,
+            color: '#00ffaa',
+            fillColor: '#00ffaa',
+            fillOpacity: 0.08,
+            weight: 1,
+            dashArray: '4, 4'
+        }).addTo(map);
+
+        // Render switcher (South Beach vs Calm East vs Storm)
+        function switchRenderView(view) {
+            const img = document.getElementById('main-render-img');
+            const caption = document.getElementById('render-caption-text');
+            const desc = document.getElementById('desc-text-box');
+            const btnSouth = document.getElementById('btn-view-south');
+            const btnCalm = document.getElementById('btn-view-calm');
+            const btnStorm = document.getElementById('btn-view-storm');
+
+            // Reset all buttons
+            [btnSouth, btnCalm, btnStorm].forEach(b => {
+                b.style.background = 'rgba(255, 255, 255, 0.05)';
+                b.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                b.style.color = '#cbd5e1';
+            });
+
+            if (view === 'south') {
+                img.src = 'assets/pomorie_south_beach_landing_station.jpg';
+                caption.innerText = 'ЮЖНА ИВИЦА // БУРГАСКИ ЗАЛИВ (ЗАЩИТЕНА ЗОНА)';
+                desc.innerHTML = '<strong>Защитена заветна зона (Южната ивица):</strong> Разположена на южния плаж на Поморие към Бургаския залив. Полуостровът действа като природен щит срещу вълнението от открито море. Водата е тиха и гладка като огледало, а сондажът под пясъка е изключително бърз и безрисков.';
+                btnSouth.style.background = 'rgba(0, 240, 255, 0.25)';
+                btnSouth.style.borderColor = 'var(--cyan)';
+                btnSouth.style.color = 'var(--cyan)';
+                map.flyTo(southBeachCoords, 14);
+            } else if (view === 'storm') {
+                img.src = 'assets/pomorie_storm_defense_render.jpg';
+                caption.innerText = 'НОС ПОМОРИЕ // ЩОРМОВА ЗАЩИТА (ТЕТРАПОДИ & ВЪЛНОЛОМ)';
+                desc.innerHTML = '<strong>Хидродинамична защита при открито море:</strong> На нос Поморие основата е издигната на <strong>+8.0m</strong> над скалите. 10-тонните тетраподи разбиват прибоя, а криволинейният парапет отразява вълните обратно в морето.';
+                btnStorm.style.background = 'rgba(0, 240, 255, 0.25)';
+                btnStorm.style.borderColor = 'var(--cyan)';
+                btnStorm.style.color = 'var(--cyan)';
+                map.flyTo(eastCapeCoords, 14);
+            } else {
+                img.src = 'assets/pomorie_cable_landing_station_render.jpg';
+                caption.innerText = 'НОС ПОМОРИЕ // АРХИТЕКТУРЕН ОБЛИК (СКАЛИСТ БРЯГ)';
+                desc.innerHTML = '<strong>Локация Нос Поморие:</strong> Директен излаз към дълбоководния черноморски шелф с подземен <em>Beach Manhole (BMH)</em>.';
+                btnCalm.style.background = 'rgba(0, 240, 255, 0.25)';
+                btnCalm.style.borderColor = 'var(--cyan)';
+                btnCalm.style.color = 'var(--cyan)';
+                map.flyTo(eastCapeCoords, 14);
+            }
+        }
+    </script>
+</body>
+</html>

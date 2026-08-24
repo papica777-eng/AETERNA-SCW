@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AETERNA-SCW // Черноморска Подводна Оптична Карта & Чертеж</title>
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #040810;
+            --card-bg: rgba(8, 14, 28, 0.90);
+            --card-border: rgba(0, 240, 255, 0.3);
+            --cyan: #00f0ff;
+            --emerald: #00ffaa;
+            --purple: #b55fe6;
+            --gold: #f59e0b;
+            --red: #ff2a85;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top Header */
+        header {
+            height: 64px;
+            background: rgba(4, 8, 16, 0.96);
+            border-bottom: 1px solid var(--card-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            z-index: 1000;
+            backdrop-filter: blur(12px);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .badge {
+            background: rgba(0, 240, 255, 0.15);
+            border: 1px solid var(--cyan);
+            color: var(--cyan);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 8px;
+            border-radius: 6px;
+            letter-spacing: 0.5px;
+        }
+
+        .title-group h1 {
+            font-size: 1.15rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            color: #fff;
+        }
+
+        .title-group span {
+            color: var(--cyan);
+        }
+
+        .legend-pill {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .legend-line {
+            width: 18px;
+            height: 4px;
+            border-radius: 2px;
+        }
+
+        /* Main Container */
+        .main-layout {
+            flex: 1;
+            display: flex;
+            position: relative;
+            height: calc(100vh - 64px);
+        }
+
+        #map {
+            flex: 1;
+            height: 100%;
+            background: #02050b;
+        }
+
+        /* Floating Sidebar */
+        .sidebar {
+            width: 520px;
+            height: calc(100% - 32px);
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            backdrop-filter: blur(25px);
+            z-index: 999;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.75);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 240, 255, 0.06);
+        }
+
+        .sidebar-header h2 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--cyan);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sidebar-content {
+            padding: 16px 20px;
+            overflow-y: auto;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* Blueprint Card */
+        .blueprint-card {
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(0, 240, 255, 0.4);
+            position: relative;
+            background: #000;
+            box-shadow: 0 10px 30px rgba(0, 240, 255, 0.2);
+            cursor: pointer;
+        }
+
+        .blueprint-card img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.4s ease;
+        }
+
+        .blueprint-card:hover img {
+            transform: scale(1.02);
+        }
+
+        .blueprint-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 8px 12px;
+            background: linear-gradient(0deg, rgba(4, 8, 16, 0.95) 0%, transparent 100%);
+            font-size: 11px;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--cyan);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Cable Systems List */
+        .cable-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .cable-item {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            padding: 12px 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .cable-item:hover {
+            border-color: var(--cyan);
+            background: rgba(0, 240, 255, 0.05);
+        }
+
+        .cable-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .cable-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .cable-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 700;
+        }
+
+        .cable-desc {
+            font-size: 11.5px;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* Explanatory Box */
+        .retrofit-box {
+            background: rgba(0, 255, 170, 0.05);
+            border-left: 3px solid var(--emerald);
+            border-radius: 0 10px 10px 0;
+            padding: 12px 14px;
+            font-size: 12px;
+            line-height: 1.6;
+            color: #cbd5e1;
+        }
+
+        /* Layer toggle */
+        .layer-btn {
+            position: absolute;
+            top: 16px;
+            left: 60px;
+            z-index: 1000;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .layer-btn:hover {
+            border-color: var(--cyan);
+            color: var(--cyan);
+        }
+
+        /* Custom Leaflet Popups */
+        .leaflet-popup-content-wrapper {
+            background: rgba(8, 14, 28, 0.95) !important;
+            border: 1px solid var(--cyan) !important;
+            color: #fff !important;
+            border-radius: 12px !important;
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.3) !important;
+            font-family: 'Outfit', sans-serif !important;
+        }
+
+        .leaflet-popup-tip {
+            background: rgba(8, 14, 28, 0.95) !important;
+            border: 1px solid var(--cyan) !important;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="brand">
+            <span class="badge">CEF-DIG-2026</span>
+            <div class="title-group">
+                <h1>AETERNA-SCW <span>//</span> ЧЕРНОМОРСКА ПОДВОДНА ОПТИЧНА МРЕЖА & ЧЕРТЕЖ</h1>
+            </div>
+        </div>
+
+        <div class="legend-pill">
+            <div class="legend-item">
+                <div class="legend-line" style="background: #00f0ff;"></div>
+                <span style="color: #00f0ff;">KAFOS (BG-TR-RO)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-line" style="background: #ff2a85;"></div>
+                <span style="color: #ff2a85;">BSFOCS / Caucasus (1,200 km)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-line" style="background: #00ffaa;"></div>
+                <span style="color: #00ffaa;">Българска брегова линия</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-line" style="background: #f59e0b; border: 1px dashed #fff;"></div>
+                <span style="color: #f59e0b;">AETERNA Retrofit Node</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Map Viewport -->
+    <div class="main-layout">
+        
+        <button id="toggle-layer-btn" class="layer-btn" onclick="toggleMapLayer()">
+            🛰️ СМЯНА: САТЕЛИТ / НАВИГАЦИОННА КАРТА
+        </button>
+
+        <div id="map"></div>
+
+        <!-- Floating Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>📐 ОФИЦИАЛЕН НАВИГАЦИОНЕН ЧЕРТЕЖ</h2>
+                <span class="badge" style="border-color: var(--emerald); color: var(--emerald);">CEF 20M EUR</span>
+            </div>
+
+            <div class="sidebar-content">
+                
+                <!-- Blueprint Image Preview -->
+                <div class="blueprint-card" onclick="zoomToBlackSea()">
+                    <img src="assets/black_sea_cables_blueprint.jpg" alt="Black Sea Fiber Optic Cable Blueprint">
+                    <div class="blueprint-caption">
+                        <span>AETERNA-SCW BLACK SEA NAUTICAL BLUEPRINT</span>
+                        <span style="color: var(--emerald);">8K CAD SCHEMATIC</span>
+                    </div>
+                </div>
+
+                <!-- Explanation of the Soft Retrofit -->
+                <div class="retrofit-box">
+                    <strong>Какво точно подобряваме без строителство на дъното:</strong><br>
+                    Вместо да полагаме нов скъп кабел (€100M+), ние свързваме нашето <strong>сухоземно лазерно изчислително ядро (Dry-Plant Laser Interrogator)</strong> към вече съществуващите свободни оптични нишки (*Dark Fiber Pairs*) на входа в <strong>Поморие и Бургаския залив</strong>. Чрез 10 kHz фазов анализ (SOP/DAS) целият подводен кабел се превръща в гигантски 150+ километров акустичен и сеизмичен радар!
+                </div>
+
+                <!-- List of Real Existing Cable Systems -->
+                <div class="cable-list">
+                    
+                    <div class="cable-item" onclick="focusCable('kafos')">
+                        <div class="cable-header">
+                            <span class="cable-title">
+                                <span style="color: #00f0ff;">●</span> KAFOS (Karadeniz Fiber Optik)
+                            </span>
+                            <span class="cable-tag" style="background: rgba(0,240,255,0.15); color: #00f0ff;">504 km</span>
+                        </div>
+                        <div class="cable-desc">
+                            <strong>Маршрут:</strong> Истанбул (Турция) ↔ Бургаски залив / Поморие ↔ Варна ↔ Мангалия / Констанца (Румъния).<br>
+                            <strong>Роля:</strong> Основният оптичен гръбнак на западното Черно море.
+                        </div>
+                    </div>
+
+                    <div class="cable-item" onclick="focusCable('caucasus')">
+                        <div class="cable-header">
+                            <span class="cable-title">
+                                <span style="color: #ff2a85;">●</span> BSFOCS / Trans-Black Sea Trunk
+                            </span>
+                            <span class="cable-tag" style="background: rgba(255,42,133,0.15); color: #ff2a85;">1,200 km</span>
+                        </div>
+                        <div class="cable-desc">
+                            <strong>Маршрут:</strong> Варна / Поморие (България) ↔ Поти / Батуми (Грузия) през абисалната черноморска равнина (-2000m).<br>
+                            <strong>Роля:</strong> Цифровият мост между ЕС и Кавказ/Азия.
+                        </div>
+                    </div>
+
+                    <div class="cable-item" onclick="focusCable('coastal')">
+                        <div class="cable-header">
+                            <span class="cable-title">
+                                <span style="color: #00ffaa;">●</span> Българска Брегова Магистрала
+                            </span>
+                            <span class="cable-tag" style="background: rgba(0,255,170,0.15); color: #00ffaa;">280 km</span>
+                        </div>
+                        <div class="cable-desc">
+                            <strong>Маршрут:</strong> Дуранкулак ↔ Балчик ↔ Варна ↔ Поморие ↔ Бургас ↔ Созопол ↔ Царево ↔ Резово.<br>
+                            <strong>Роля:</strong> Национален оптичен шелфов пръстен и връзка с държавния възел в София.
+                        </div>
+                    </div>
+
+                    <div class="cable-item" style="border-color: rgba(245,158,11,0.4); background: rgba(245,158,11,0.05);" onclick="focusCable('pomorie')">
+                        <div class="cable-header">
+                            <span class="cable-title">
+                                <span style="color: #f59e0b;">★</span> AETERNA-SCW Точка на надграждане (Поморие)
+                            </span>
+                            <span class="cable-tag" style="background: rgba(245,158,11,0.2); color: #f59e0b;">ТОЧКА НА ВЛИВАНЕ</span>
+                        </div>
+                        <div class="cable-desc">
+                            <strong>Локация:</strong> 42.5580° N, 27.6180° E (Южна ивица / Бургаски залив).<br>
+                            <strong>Функция:</strong> Вливане на 10 kHz лазерен фазов сигнал, $O(1)$ Mojo AI детекция и Linux eBPF ядрена защита за 1.02 ms.
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Init Map centered on Black Sea Basin
+        const blackSeaCenter = [43.0000, 32.0000];
+        const map = L.map('map', {
+            center: [42.8000, 29.5000],
+            zoom: 7,
+            zoomControl: false
+        });
+
+        L.control.zoom({ position: 'bottomleft' }).addTo(map);
+
+        // Layers
+        const darkLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; CartoDB'
+        });
+
+        const satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            attribution: 'Esri, Maxar'
+        });
+
+        darkLayer.addTo(map);
+        let currentLayer = 'dark';
+
+        function toggleMapLayer() {
+            if (currentLayer === 'dark') {
+                map.removeLayer(darkLayer);
+                satelliteLayer.addTo(map);
+                currentLayer = 'satellite';
+                document.getElementById('toggle-layer-btn').innerHTML = '🗺️ СМЯНА: НАВИГАЦИОНЕН КИБЕР РЕЖИМ';
+            } else {
+                map.removeLayer(satelliteLayer);
+                darkLayer.addTo(map);
+                currentLayer = 'dark';
+                document.getElementById('toggle-layer-btn').innerHTML = '🛰️ СМЯНА: САТЕЛИТЕН РЕЖИМ';
+            }
+        }
+
+        // Cities Coordinates
+        const cities = {
+            pomorie: [42.5580, 27.6180],
+            burgas: [42.5048, 27.4626],
+            varna: [43.2141, 27.9147],
+            balchik: [43.4167, 28.1667],
+            mangalia: [43.8167, 28.5833],
+            constanta: [44.1792, 28.6498],
+            istanbul: [41.2500, 29.0300], // Kilyos Landing
+            poti: [42.1462, 41.6719],
+            batumi: [41.6416, 41.6359]
+        };
+
+        // City Marker Creator
+        function addCityMarker(name, coords, color = '#00f0ff', isMain = false) {
+            const icon = L.divIcon({
+                className: 'custom-icon',
+                html: `<div style="background: ${color}; border: 2px solid #fff; width: ${isMain ? 24 : 14}px; height: ${isMain ? 24 : 14}px; border-radius: 50%; box-shadow: 0 0 ${isMain ? 25 : 12}px ${color}; display: flex; align-items: center; justify-content: center; font-size: ${isMain ? 12 : 8}px;">${isMain ? '★' : ''}</div>`,
+                iconSize: [isMain ? 24 : 14, isMain ? 24 : 14],
+                iconAnchor: [isMain ? 12 : 7, isMain ? 12 : 7]
+            });
+            const m = L.marker(coords, { icon: icon }).addTo(map);
+            m.bindPopup(`<strong>${name}</strong><br>Оптичен терминал / Landing Station`);
+            return m;
+        }
+
+        // Add Markers
+        const pomorieMarker = addCityMarker('★ ПОМОРИЕ (AETERNA-SCW DRY-PLANT NODE)', cities.pomorie, '#f59e0b', true);
+        addCityMarker('Бургас (Landing Point)', cities.burgas, '#00f0ff');
+        addCityMarker('Варна (CLS)', cities.varna, '#00f0ff');
+        addCityMarker('Мангалия / Констанца (Румъния)', cities.constanta, '#00f0ff');
+        addCityMarker('Истанбул / Килиос (Турция)', cities.istanbul, '#00f0ff');
+        addCityMarker('Поти / Батуми (Грузия)', cities.poti, '#ff2a85');
+
+        // 1. KAFOS Cable Route (Istanbul -> Burgas/Pomorie -> Varna -> Mangalia/Constanta)
+        const kafosRoute = [
+            cities.istanbul,
+            [41.6000, 28.8000],
+            [42.1000, 28.3000],
+            [42.4500, 27.9000],
+            cities.pomorie,
+            cities.burgas,
+            cities.pomorie,
+            [42.7000, 28.0000],
+            cities.varna,
+            [43.5000, 28.4000],
+            cities.mangalia,
+            cities.constanta
+        ];
+        const kafosLine = L.polyline(kafosRoute, {
+            color: '#00f0ff',
+            weight: 4,
+            opacity: 0.85
+        }).addTo(map);
+        kafosLine.bindPopup('<strong>KAFOS СИСТЕМА (504 km)</strong><br>Истанбул ↔ Поморие/Бургас ↔ Варна ↔ Мангалия');
+
+        // 2. Trans-Black Sea BSFOCS / Caucasus Route (Bulgaria -> Georgia 1,200 km)
+        const caucasusRoute = [
+            cities.pomorie,
+            [42.6000, 28.5000],
+            [42.8000, 30.5000],
+            [43.0000, 33.5000],
+            [43.0500, 36.5000],
+            [42.8000, 39.5000],
+            cities.poti,
+            cities.batumi
+        ];
+        const caucasusLine = L.polyline(caucasusRoute, {
+            color: '#ff2a85',
+            weight: 4,
+            opacity: 0.85,
+            dashArray: '10, 6'
+        }).addTo(map);
+        caucasusLine.bindPopup('<strong>BSFOCS / TRANS-BLACK SEA КАБЕЛ (1,200 km)</strong><br>Поморие/Варна ↔ Поти (Грузия) през абисалната зона (-2000m)');
+
+        // 3. Bulgarian Coastal Trunk (Durankulak -> Balchik -> Varna -> Pomorie -> Burgas -> Tsarevo)
+        const coastalRoute = [
+            [43.7000, 28.6000], // Durankulak
+            cities.balchik,
+            cities.varna,
+            [42.7000, 27.8800], // Cape Emine
+            cities.pomorie,
+            cities.burgas,
+            [42.4200, 27.7000], // Sozopol
+            [42.1700, 27.8500], // Tsarevo
+            [41.9800, 28.0300]  // Rezovo (Border)
+        ];
+        const coastalLine = L.polyline(coastalRoute, {
+            color: '#00ffaa',
+            weight: 3,
+            opacity: 0.9,
+            dashArray: '5, 5'
+        }).addTo(map);
+        coastalLine.bindPopup('<strong>БЪЛГАРСКА БРЕГОВА МАГИСТРАЛА (280 km)</strong><br>Варна ↔ Нос Емине ↔ Поморие ↔ Бургас ↔ Резово');
+
+        // Navigation Helper Functions
+        function focusCable(type) {
+            if (type === 'kafos') {
+                map.flyTo([42.8000, 28.5000], 8);
+                kafosLine.openPopup();
+            } else if (type === 'caucasus') {
+                map.flyTo([42.8000, 34.5000], 7);
+                caucasusLine.openPopup();
+            } else if (type === 'coastal') {
+                map.flyTo([42.8000, 27.9000], 9);
+                coastalLine.openPopup();
+            } else if (type === 'pomorie') {
+                map.flyTo(cities.pomorie, 13);
+                pomorieMarker.openPopup();
+            }
+        }
+
+        function zoomToBlackSea() {
+            map.flyTo([42.8000, 32.0000], 7);
+        }
+    </script>
+</body>
+</html>
