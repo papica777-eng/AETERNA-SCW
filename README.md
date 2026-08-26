@@ -82,11 +82,12 @@ By replacing bloated cloud infrastructure and heavy floating-point neural networ
 
 ## Consortium Partners & Institutional Alignment
 
-The **AETERNA-SCW** consortium unites sovereign software architecture, landing infrastructure, and geophysics research:
+The **AETERNA-SCW** consortium unites sovereign software architecture, national institutional endorsement, landing infrastructure, and geophysics research:
 
-1. 🇧🇬 **AETERNA (Pomorie, Bulgaria)** — **Lead Coordinator & Sovereign Systems Architect** (PIC: `865986222`). Architect of the Mojo vectorized AI core, zero-copy Zig optical DMA ingress engines, and Rust/eBPF kernel sentinel loops.
-2. 🇬🇷 **Hellenic Submarine Telecom Authority (Athens, Greece)** — **Landing Terminal & Subsea Infrastructure Partner**. Providing direct access to trans-oceanic landing terminals and active telecommunication trunks across the Mediterranean.
-3. 🇩🇪 **Munich Institute of Geophysics (LMU Munich, Germany)** — **Seismic & Physical Telemetry Calibration Partner**. Leading WP2 seismic signal calibration, acoustic wave classification, and early-warning tsunami alert feeds.
+1. 🇧🇬 **Ministry of Innovation and Digital Transformation (Republic of Bulgaria)** — **Official State Institutional Support & National Strategic Alignment** (Ref. № `94-00-322-3 / 26.08.2026`). Formally endorsing AETERNA-SCW for critical digital connectivity, undersea infrastructure resilience, and Black Sea technological sovereignty. ([**Read Signed Letter of Support**](docs/Letters_of_Intent/LOS_CEF_Cables_Ministry_of_Innovation_and_Digital_Transformation_BG.md))
+2. 🇧🇬 **AETERNA (Pomorie, Bulgaria)** — **Lead Coordinator & Sovereign Systems Architect** (PIC: `865986222`). Architect of the Mojo vectorized AI core, zero-copy Zig optical DMA ingress engines, and Rust/eBPF kernel sentinel loops.
+3. 🇬🇷 **Hellenic Submarine Telecom Authority (Athens, Greece)** — **Landing Terminal & Subsea Infrastructure Partner**. Providing direct access to trans-oceanic landing terminals and active telecommunication trunks across the Mediterranean. ([**Read Letter of Support**](docs/Letters_of_Intent/LOS_CEF_Cables_Hellenic_Submarine_Telecom_Authority.md))
+4. 🇩🇪 **Munich Institute of Geophysics (LMU Munich, Germany)** — **Seismic & Physical Telemetry Calibration Partner**. Leading WP2 seismic signal calibration, acoustic wave classification, and early-warning tsunami alert feeds. ([**Read Letter of Support**](docs/Letters_of_Intent/LOS_CEF_Cables_Munich_Institute_of_Geophysics.md))
 
 ---
 
