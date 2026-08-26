@@ -45,7 +45,7 @@
 
 A cinematic, ultra-high-definition visualization of the **AETERNA Subsea Cyber-Physical Shield** resting on the deep-ocean bed, actively monitoring light telemetry and protected by holographic secure grids. Signed by the Sovereign Systems Architect *Dimitar Prodromov*:
 
-![AETERNA-SCW Subsea Cyber-Physical Shield Network Masterwork](assets/aeterna_scw_cable_network_map.jpg)
+![AETERNA-SCW Subsea Cyber-Physical Shield Signed Masterwork](docs/aeterna_scw_aigis_masterpiece_signed.png)
 
 ---
 
